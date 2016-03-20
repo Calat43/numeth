@@ -110,7 +110,7 @@ void Axis::drawOY(QPainter & p)
 	}
 }
 
-void Axis::paintEvent(QPaintEvent * event)
+void Axis::paintEvent(QPaintEvent *)
 {
 	QPainter p(this);
 	p.setPen(m_color);

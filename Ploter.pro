@@ -16,7 +16,6 @@ SOURCES += main.cpp\
     axis.cpp \
     ploter.cpp \
     plot.cpp \
-    function.cpp \
     utils.cpp \
     numeth.cpp
 
@@ -24,7 +23,6 @@ HEADERS  += \
     axis.h \
     ploter.h \
     plot.h \
-    function.h \
     utils.h \
     numeth.h
 
