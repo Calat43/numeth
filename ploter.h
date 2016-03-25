@@ -74,6 +74,8 @@ public:
 	{
 		QPainter p(this);
 
+        if (m_plot_anim.empty()) return;
+
 		Plot * plot = m_plot_anim[m_cur_plot];
 		p.setPen(plot->get_color());
 		for (double x = plot->x_min(),

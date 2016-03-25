@@ -1,16 +1,45 @@
 #include "numeth.h"
 
+double solution(double x, double t)
+{
+    if (t < x) return 0;
+    return 1;
+}
+
 class Sin_plot : public Plot
 {
 public:
     Sin_plot(double x_min, double x_max,
              double y_min, double y_max,
-             QColor color)
-        : Plot(x_min, x_max, y_min, y_max, color) {}
+             QColor color,
+             int t)
+        : Plot(x_min, x_max, y_min, y_max, color)
+        , m_param(t)
+    {}
     double get_val(double x)
     {
-        return sin(x);
+        return sin(m_param*x);
     }
+private:
+    int m_param;
+};
+
+class U_plot : public Plot
+{
+public:
+    U_plot(double x_min, double x_max,
+             double y_min, double y_max,
+             QColor color,
+             double t)
+        : Plot(x_min, x_max, y_min, y_max, color)
+        , m_param(t)
+    {}
+    double get_val(double x)
+    {
+        return solution(x, m_param);
+    }
+private:
+    double m_param;
 };
 
 class Array_plot : public Plot
@@ -60,13 +89,13 @@ std::vector< double > shuttle(std::vector< double > sub,
 
 void task1(AnimPloter & ploter_win, std::ostream & fout)
 {
-    int N = 10;
-    int M = 40;
+    int const N_MAX = 1000;
 
-    double alph = 1;
+    int N = 100;
+    int M = 4000;
 
-    double h = 1./(double)N;
-    double tau = 1./(double)M;
+    double alph = 0;
+
 
     std::vector<double> first_row(N, 0.);
 
@@ -75,10 +104,49 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
 
     std::vector< Plot * > plot_anim;
 
+    for (int N = 25; N <= N_MAX; N*=2) {
+        double h = 1./(double)N;
+        double tau = 1./(double)M;
+
+        double err = 0;
+        //бегущий счет для альфа = 0
+        for(int t = 0; t <= M; ++t)
+        {
+            prev_row.resize(N);
+            new_row.resize(N);
+            //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+            new_row[0] = 1;
+            new_row[1] = 1;
+            /*for(auto val : prev_row)
+            {
+                fout << val << " ";
+            }
+            fout << std::endl;*/
+            for(int j = 2; j <= N; ++j)
+            {
+                new_row[j] = (1. - 1.5*tau*(double)N)*prev_row[j] +
+                             (2.*tau*(double)N)*prev_row[j-1] - (0.5*tau*(double)N)*prev_row[j-2];
+             }
+        //	for(int j = 0; j)
+            for(int j = 0; j <= N; ++j)
+            {
+                prev_row[j] = new_row[j];
+            }
+            for (int j = 0; j <= N; ++j)
+            {
+                double new_err = fabs(new_row[j] - solution(j*h, t*tau));
+                if (err < new_err) err = new_err;
+            }
+        }
+        fout << N << " " << err << std::endl;
+    }
+/*
+    //прогонка для общего случая
     for(int t = 1; t < M; ++t)
     {
         // делаем график
-        plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+        //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+        plot_anim.push_back(new U_plot(-1, 2, -1, 1, QColor(255,0,0), t*tau));
         // печатаем в файл
         for(auto val : prev_row)
         {
@@ -114,6 +182,7 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
             prev_row[j] = result[j-1];
         }
     }
+*/
 
     ploter_win.drawAnimPlot(plot_anim);
 }
