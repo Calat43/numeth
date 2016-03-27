@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     AnimPloter ploter_win(-0.1, 1.1, -2, 2, QColor(0, 0, 0), 0);
     ploter_win.show();
-    task1(ploter_win, fout);
+    sin_task1(ploter_win, fout);
 
     /*
     Ploter ploter_win(-2, 2, -3, 3, QColor(0,0,0));
