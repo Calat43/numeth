@@ -103,8 +103,16 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
     std::vector< double > new_row(N, 0.);
 
     std::vector< Plot * > plot_anim;
+    std::vector< Plot * > sol_plot_anim;
 
-    for (int N = 25; N <= N_MAX; N*=2) {
+    for (int N = 25; N <= N_MAX; N*=2)
+    //for (int id = 0; id < 5; id++)
+    //N = 25;
+    {
+        for(auto & elem : prev_row)
+        {
+            elem = 0;
+        }
         double h = 1./(double)N;
         double tau = 1./(double)M;
 
@@ -114,7 +122,8 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
         {
             prev_row.resize(N);
             new_row.resize(N);
-            //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+            plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+            sol_plot_anim.push_back(new U_plot(0, 1, -2, 2, QColor(32, 64, 255), t*tau));
             new_row[0] = 1;
             new_row[1] = 1;
             /*for(auto val : prev_row)
@@ -132,9 +141,20 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
             {
                 prev_row[j] = new_row[j];
             }
-            for (int j = 0; j <= N; ++j)
+            for (int j = 2; j <= N; ++j)
             {
-                double new_err = fabs(new_row[j] - solution(j*h, t*tau));
+                double new_err = fabs(new_row[j] - solution(j*h - h/2., t*tau));
+                if (false)
+                //if (new_err == 1)
+                {
+                    fout << "#approx: " << new_row[j];
+                    fout << " sol: " << solution(j*h, t*tau);
+                    fout << " j: " << j;
+                    fout << " x: " << j*h - h/2.;
+                    fout << " t: " << t;
+                    fout << " time: " << t*tau;
+                    fout << std::endl;
+                }
                 if (err < new_err) err = new_err;
             }
         }
@@ -185,4 +205,5 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
 */
 
     ploter_win.drawAnimPlot(plot_anim);
+    ploter_win.drawAnimPlot(sol_plot_anim);
 }

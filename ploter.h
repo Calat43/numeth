@@ -74,32 +74,44 @@ public:
 	{
 		QPainter p(this);
 
-        if (m_plot_anim.empty()) return;
+        if (m_plots.empty()) return;
 
-		Plot * plot = m_plot_anim[m_cur_plot];
-		p.setPen(plot->get_color());
-		for (double x = plot->x_min(),
-					max = plot->x_max(),
-					step = 1. / m_scale;
-			 x < max;
-			 x += step)
-		{
-			p.drawLine(screen_coord(x, plot->get_val(x)),
-					   screen_coord(
-						   x + step,
-						   plot->get_val(x + step)
-					   ));
-		}
-		if (m_cur_plot < m_plot_anim.size() - 1)
+        bool has_new_frames = false;
+        for (auto plot_anim : m_plots)
+        {
+            Plot * plot;
+            if (m_cur_plot < plot_anim.size())
+            {
+                plot = plot_anim[m_cur_plot];
+                has_new_frames = true;
+            }
+            else
+            {
+                plot = plot_anim[plot_anim.size()-1];
+            }
+            p.setPen(plot->get_color());
+            for (double x = plot->x_min(),
+                        max = plot->x_max(),
+                        step = 1. / m_scale;
+                 x < max;
+                 x += step)
+            {
+                p.drawLine(screen_coord(x, plot->get_val(x)),
+                           screen_coord(
+                               x + step,
+                               plot->get_val(x + step)
+                           ));
+            }
+        }
+        if (has_new_frames)
 		{
 			++m_cur_plot;
 		}
-
 	}
 
 	void drawAnimPlot(std::vector<Plot *> & plot_anim)
 	{
-		m_plot_anim = plot_anim;
+        m_plots.push_back(plot_anim);
 		update();
 		m_cur_plot = 0;
 	}
@@ -110,6 +122,6 @@ public slots:
 		++m_cur_plot;
 	}*/
 private:
-	std::vector<Plot *> m_plot_anim;
+    std::vector<std::vector<Plot *>> m_plots;
 	unsigned int m_cur_plot;
 };

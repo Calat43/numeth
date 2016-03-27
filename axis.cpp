@@ -7,7 +7,7 @@ Axis::Axis(Ploter & ploter, QColor color, QWidget *parent)
 	: QWidget(parent)
 	, m_ploter(ploter)
 	, m_color(color)
-	, m_min_point(0.1)
+    , m_min_point(0.04)
 {
 }
 
@@ -27,7 +27,7 @@ void Axis::drawOX(QPainter & p)
 		QPoint(geometry().width(), ox_top)
 	);
 
-	for(double x = m_ploter.m_x_min;
+    for(double x = floor(m_ploter.m_x_min / m_min_point) * m_min_point;
 		x <= m_ploter.m_x_max + m_min_point / 2;
 		x += m_min_point)
 	{
@@ -77,7 +77,7 @@ void Axis::drawOY(QPainter & p)
 		QPoint(oy_left, geometry().height())
 	);
 
-	for(double y = m_ploter.m_y_min;
+    for(double y = floor(m_ploter.m_y_min / m_min_point) * m_min_point;
 		y <= m_ploter.m_y_max + m_min_point / 2;
 		y += m_min_point)
 	{
