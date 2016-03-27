@@ -103,18 +103,25 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
     std::vector< double > new_row(N, 0.);
 
     std::vector< Plot * > plot_anim;
+    std::vector< Plot * > sol_plot_anim;
 
     for (int N = 2; N <= N_MAX; N*=2) {
         double h = 1./(double)N;
         double tau = 1./(double)M;
 
+        prev_row.resize(N);
+        new_row.resize(N);
+        for (int i = 0; i < N; ++i)
+        {
+            prev_row[i] = 0;
+        }
+
         double err = 0;
         //бегущий счет для альфа = 0
         for(int t = 0; t <= M; ++t)
         {
-            prev_row.resize(N);
-            new_row.resize(N);
-            //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+            plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
+            sol_plot_anim.push_back(new U_plot(0, 1, -2, 2, QColor(64, 64, 255), t*tau));
             new_row[0] = 1;
             new_row[1] = 1;
             /*for(auto val : prev_row)
@@ -122,71 +129,30 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
                 fout << val << " ";
             }
             fout << std::endl;*/
-            for(int j = 2; j <= N; ++j)
+            for(int j = 2; j < N; ++j)
             {
                 new_row[j] = (1. - 1.5*tau*(double)N)*prev_row[j] +
                              (2.*tau*(double)N)*prev_row[j-1] - (0.5*tau*(double)N)*prev_row[j-2];
              }
 
-            for(int j = 0; j <= N; ++j)
+            for(int j = 0; j < N; ++j)
             {
                 prev_row[j] = new_row[j];
             }
-          //  if (t == 3*M/5) {
-            for (int j = 0; j <= N; ++j)
+            //if (t == 3*M/4) {
+            for (int j = 2; j < N; ++j)
             {
-                double new_err = fabs(new_row[j] - solution(j*h, t*tau));
+                double new_err = fabs(new_row[j] - solution(j*h - h/2., t*tau));
                 if (err < new_err) err = new_err;
             }
-          //  }
+            //}
         }
         fout << N << " " << err << std::endl;
     }
-/*
-    //прогонка для общего случая
-    for(int t = 1; t < M; ++t)
-    {
-        // делаем график
-        //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
-        plot_anim.push_back(new U_plot(-1, 2, -1, 1, QColor(255,0,0), t*tau));
-        // печатаем в файл
-        for(auto val : prev_row)
-        {
-            fout << val << " ";
-        }
-        fout << std::endl;
 
-        new_row[0] = 1;
-
-        std::vector< double > sub_coeff(N - 1, (alph / (2 * h)));
-        std::vector< double > main_coeff(N, (2 * alph) / h);
-        std::vector< double > super_coeff(N - 1, (1. / tau + (3 * alph) / (2 * h)));
-        sub_coeff[N-2] = -1;
-        main_coeff[N-1] = 1;
-
-        std::vector< double > right_coeff(N, 0.);
-        right_coeff[0] = (1. / tau - (1 - alph) / (2 * h)) * prev_row[2] +
-                         2*(1 - alph) / h * prev_row[1] -
-                         (1 - alph) / (2 * h) * prev_row[0] -
-                         alph / (2 * h) * new_row[0];
-        for (int j = 3; j <= N; ++j)
-        {
-            right_coeff[j-2] = (1. / tau - (1 - alph) / (2 * h)) * prev_row[j] +
-                               2*(1 - alph) / h * prev_row[j-1] -
-                               (1 - alph) / (2 * h) * prev_row[j-2];
-        }
-        right_coeff[N-1] = prev_row[N];
-
-        std::vector< double > result = shuttle(sub_coeff, main_coeff, super_coeff, right_coeff);
-        prev_row[0] = new_row[0];
-        for(int j = 1; j <= N; ++j)
-        {
-            prev_row[j] = result[j-1];
-        }
-    }
-*/
 
     ploter_win.drawAnimPlot(plot_anim);
+    ploter_win.drawAnimPlot(sol_plot_anim);
 }
 
 void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
@@ -212,14 +178,16 @@ void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
     std::vector< double > new_row(N, 0.);
 
     std::vector< Plot * > plot_anim;
+    std::vector< Plot * > sol_plot_anim;
+
 
     //бегущий счет для альфа = 0
-    for(int t = 0; t <= M; ++t)
+    /*for(int t = 0; t <= M; ++t)
     {
         prev_row.resize(N);
         new_row.resize(N);
-        //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
-        plot_anim.push_back(new Sin_plot(0, 1, -2, 2, QColor(255, 64, 64), t*tau));
+        plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(64, 64, 255), prev_row));
+        sol_plot_anim.push_back(new Sin_plot(0, 1, -2, 2, QColor(255, 64, 64), t*tau));
         new_row[0] = sin(t*tau);
         new_row[1] = sin(t*tau - h);
 
@@ -233,43 +201,53 @@ void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
         {
             prev_row[j] = new_row[j];
         }
-    }
+    }*/
 
-    /* for (int N = 2; N <= N_MAX; N*=2) {
+
+    for (int N = 2; N <= N_MAX; N*=2)
+    {
         double h = 1./(double)N;
         double tau = 1./(double)M;
 
         double err = 0;
+
+        prev_row.resize(N);
+        new_row.resize(N);
+        for (int j = 0; j < N; ++j)
+        {
+            prev_row[j] = -sin(j*h);
+        }
+
         //бегущий счет для альфа = 0
         for(int t = 0; t <= M; ++t)
         {
-            prev_row.resize(N);
-            new_row.resize(N);
-            //plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
-            new_row[0] = 1;
-            new_row[1] = 1;
+            plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(64, 64, 255), prev_row));
+            sol_plot_anim.push_back(new Sin_plot(0, 1, -2, 2, QColor(255, 64, 64), t*tau));
+            new_row[0] = sin(t*tau);
+            new_row[1] = sin(t*tau - h);
 
-            for(int j = 2; j <= N; ++j)
+            for(int j = 2; j < N; ++j)
             {
                 new_row[j] = (1. - 1.5*tau*(double)N)*prev_row[j] +
                              (2.*tau*(double)N)*prev_row[j-1] - (0.5*tau*(double)N)*prev_row[j-2];
              }
 
-            for(int j = 0; j <= N; ++j)
+            for(int j = 0; j < N; ++j)
             {
                 prev_row[j] = new_row[j];
             }
-          //  if (t == 3*M/5) {
-            for (int j = 0; j <= N; ++j)
+
+            for (int j = 0; j < N; ++j)
             {
-                double new_err = fabs(new_row[j] - solution(j*h, t*tau));
+                double new_err = fabs(new_row[j] - sin(t*tau - j*h));
                 if (err < new_err) err = new_err;
             }
-          //  }
+
         }
         fout << N << " " << err << std::endl;
     }
-   */
+
 
     ploter_win.drawAnimPlot(plot_anim);
+    ploter_win.drawAnimPlot(sol_plot_anim);
 }

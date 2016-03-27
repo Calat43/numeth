@@ -9,26 +9,26 @@ class Ploter;
 
 class Axis : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit Axis(Ploter & ploter, QColor color,
-				  QWidget *parent = 0);
+    explicit Axis(Ploter & ploter, QColor color,
+                  QWidget *parent = 0);
 
-	void paintEvent(QPaintEvent * event);
+    void paintEvent(QPaintEvent * event);
 
-	void drawOX(QPainter & p);
-	void drawOY(QPainter & p);
+    void drawOX(QPainter & p);
+    void drawOY(QPainter & p);
 signals:
 
 public slots:
 
 private:
-	Ploter & m_ploter;
-	QColor m_color;
-	double m_min_point;
+    Ploter & m_ploter;
+    QColor m_color;
+    double m_min_point;
 
-	static const int MIN_WIDTH;
-	static const int MAJ_WIDTH;
+    static const int MIN_WIDTH;
+    static const int MAJ_WIDTH;
 };
 
 #include "ploter.h"
