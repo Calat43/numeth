@@ -78,17 +78,28 @@ double right(double x, double y)
 void expl(AnimPloter & ploter_win)
 {
     int M = 100;
-    int N_x = 100;
-    int N_y = 100;
+    int N_x = 1000;
+    int N_y = 1000;
     double tau = 1./M;
     double h_x = 1./N_x;
     double h_y = 1./N_y;
 
-    double eps = 0.01;
+    double eps = 0.001;
     double max = 0;
 
     std::vector<std::vector<double>> U_prev(N_x + 1, std::vector<double>(N_y + 1, 0));
-    std::vector<std::vector<double>> U_new = U_prev;
+    std::vector<std::vector<double>> U_new(N_x + 1, std::vector<double>(N_y + 1, 0));
+
+    for(int j = 0; j <= N_y; ++j)
+    {
+        U_prev[0][j] = sol_0_y(j*h_y);
+        U_prev[N_x][j] = sol_1_y(j*h_y);
+    }
+    for(int i = 0; i <= N_y; ++i)
+    {
+        U_prev[i][0] = sol_x_0(i*h_x);
+        U_prev[i][N_y] = sol_x_1(i*h_x);
+    }
 
     while(true)
     {
