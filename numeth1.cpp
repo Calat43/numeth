@@ -1,4 +1,4 @@
-#include "numeth.h"
+#include "numeth1.h"
 
 double solution(double x, double t)
 {
@@ -95,7 +95,7 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
     int N = 100;
     int M = 4000;
 
-    double alph = 0.5;
+    double alph = 0;
 
 
     std::vector<double> first_row(N, 0.);
@@ -104,7 +104,6 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
     std::vector< double > new_row(N, 0.);
 
     std::vector< Plot * > plot_anim;
-    std::vector< Plot * > sol_plot_anim;
 
     for (int N = 2; N <= N_MAX; N*=2) {
         double h = 1./(double)N;
@@ -122,7 +121,7 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
         for(int t = 0; t <= M; ++t)
         {
             plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(255, 64, 64), prev_row));
-            sol_plot_anim.push_back(new U_plot(0, 1, -2, 2, QColor(64, 64, 255), t*tau));
+            //sol_plot_anim.push_back(new U_plot(0, 1, -2, 2, QColor(64, 64, 255), t*tau));
             new_row[0] = 1;
             new_row[1] = 1;
             /*for(auto val : prev_row)
@@ -143,32 +142,32 @@ void task1(AnimPloter & ploter_win, std::ostream & fout)
             {
                 prev_row[j] = new_row[j];
             }
-            //if (t == 3*M/4) {
-            for (int j = 2; j < N; ++j)
+           // if (t == M/2)
             {
-                double new_err = fabs(new_row[j] - solution(j*h - h/2., t*tau));
-                if (err < new_err) err = new_err;
+                for (int j = 3; j < N; ++j)
+                {
+                    double new_err = fabs(new_row[j] - solution(j*h - h/2., t*tau));
+                    if (err < new_err) err = new_err;
+                }
             }
-            //}
         }
         fout << N << " " << err << std::endl;
     }
 
 
     ploter_win.drawAnimPlot(plot_anim);
-    ploter_win.drawAnimPlot(sol_plot_anim);
+    //ploter_win.drawAnimPlot(sol_plot_anim);
 }
 
 void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
 {
     int const N_MAX = 1000;
-    int const M_MAX = 40000;
+    int const M_MAX = 4000;
 
-    int N = 100;
+    int N = 400;
     int M = 4000;
 
-    double alph = 1;
-
+    double alph = 0.5;
     double h = 1./(double)N;
     double tau = 1./(double)M;
 
@@ -186,33 +185,7 @@ void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
     std::vector< Plot * > sol_plot_anim;
 
 
-    //бегущий счет
-    /*for(int t = 0; t <= M; ++t)
-    {
-        prev_row.resize(N);
-        new_row.resize(N);
-        plot_anim.push_back(new Array_plot(0, 1, -2, 2, QColor(64, 64, 255), prev_row));
-        sol_plot_anim.push_back(new Sin_plot(0, 1, -2, 2, QColor(255, 64, 64), t*tau));
-        new_row[0] = sin(t*tau);
-        new_row[1] = sin(t*tau - h);
-
-        for(int j = 2; j <= N; ++j)
-        {
-                new_row[j] = ((M - 1.5*N*(1 - alph))*prev_row[j] +
-                             4*(0.5*N*alph*new_row[j-1] +
-                                0.5*N*(1 - alph)*prev_row[j-1]) -
-                             0.5*N*alph*new_row[j-2] - 0.5*N*(1 - alph)*prev_row[j-2])/
-                             (M + 1.5*N*alph);
-        }
-
-        for(int j = 0; j <= N; ++j)
-        {
-            prev_row[j] = new_row[j];
-        }
-    }*/
-
-
-    for (int M = 2; M <= M_MAX; M*=2)
+    for (int N = 2; N <= N_MAX; N*=2)
     {
         double h = 1./(double)N;
         double tau = 1./(double)M;
@@ -255,7 +228,7 @@ void sin_task1(AnimPloter & ploter_win, std::ostream & fout)
             }
 
         }
-        fout << M << " " << err << std::endl;
+        fout << N << " " << err << std::endl;
     }
 
 

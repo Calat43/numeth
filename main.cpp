@@ -1,7 +1,7 @@
 #include "ploter.h"
 #include <QApplication>
 #include <QtMath>
-#include "numeth.h"
+#include "numeth2.h"
 #include <fstream>
 /*
 class Sin_plot : public Plot
@@ -71,9 +71,10 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
     std::ofstream fout("output.txt", std::ofstream::out);
 
-    AnimPloter ploter_win(-0.1, 1.1, -2, 2, QColor(0, 0, 0), 0);
+    AnimPloter ploter_win(-0.1, 1.1, -2, 2, QColor(0, 0, 0), 200);
     ploter_win.show();
-    sin_task1(ploter_win, fout);
+    //task1(ploter_win, fout);
+    expl(ploter_win);
 
     /*
     Ploter ploter_win(-2, 2, -3, 3, QColor(0,0,0));
