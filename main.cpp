@@ -70,11 +70,13 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
     std::ofstream fout("output.txt", std::ofstream::out);
+    std::ofstream fout_appr("output_appr.txt", std::ofstream::out);
 
-    AnimPloter ploter_win(-0.1, 1.1, -2, 2, QColor(0, 0, 0), 100);
+    AnimPloter ploter_win(-0.1, 1.1, -4, 4, QColor(0, 0, 0), 50);
     ploter_win.show();
     //task1(ploter_win, fout);
-    expl(ploter_win);
+    //expl(ploter_win, fout);
+    expl_appr(ploter_win, fout_appr);
 
     /*
     Ploter ploter_win(-2, 2, -3, 3, QColor(0,0,0));

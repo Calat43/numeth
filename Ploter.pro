@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     ploter.cpp \
     plot.cpp \
     utils.cpp \
-    numeth.cpp
+    numeth1.cpp \
+    numeth2.cpp
 
 HEADERS  += \
     axis.h \
     ploter.h \
     plot.h \
     utils.h \
-    numeth.h
+    numeth1.h \
+    numeth2.h
 
 CONFIG += c++11
