@@ -121,9 +121,9 @@ double right(double x, double y)
 
 void expl(AnimPloter & ploter_win, std::ostream & fout)
 {
-    int M = 100;
-    int N_x = 10;
-    int N_y = 10;
+    int M = 10;
+    int N_x = 8;
+    int N_y = 8;
     double tau = 1./M;
     double h_x = 1./N_x;
     //fout << " " << h_x << std::endl;
@@ -132,32 +132,44 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
     double eps = 0.001;
     double max = 0;
     double error = 0;
+    int time = 0;
 
-    std::vector<std::vector<double>> U_prev(N_x + 1, std::vector<double>(N_y + 1, 0));
+    std::vector<std::vector<double>> U_prev(N_x + 1, std::vector<double>(N_y + 1, 2));
     std::vector<std::vector<double>> U_new(N_x + 1, std::vector<double>(N_y + 1, 0));
 
     for(int j = 0; j <= N_y; ++j)
     {
-        U_prev[0][j] = sol_0_y(j*h_y);
-        U_prev[N_x][j] = sol_1_y(j*h_y);
+        //U_prev[0][j] = sol_0_y(j*h_y);
+        //U_prev[N_x][j] = sol_1_y(j*h_y);
+        U_prev[0][j] = 1;
+        U_prev[N_x][j] = 1;
     }
     for(int i = 0; i <= N_x; ++i)
     {
-        U_prev[i][0] = sol_x_0(i*h_x);
-        U_prev[i][N_y] = sol_x_1(i*h_x);
+        //U_prev[i][0] = sol_x_0(i*h_x);
+        //U_prev[i][N_y] = sol_x_1(i*h_x);
+        U_prev[i][0] = 1;
+        U_prev[i][N_y] = 1;
     }
 
     while(true)
     {
+        max = 0;
+        ++time;
+
         for(int j = 0; j <= N_y; ++j)
         {
-            U_new[0][j] = sol_0_y(j*h_y);
-            U_new[N_x][j] = sol_1_y(j*h_y);
+            //U_new[0][j] = sol_0_y(j*h_y);
+            //U_new[N_x][j] = sol_1_y(j*h_y);
+            U_new[0][j] = 1;
+            U_new[N_x][j] = 1;
         }
         for(int i = 0; i <= N_x; ++i)
         {
-            U_new[i][0] = sol_x_0(i*h_x);
-            U_new[i][N_y] = sol_x_1(i*h_x);
+            //U_new[i][0] = sol_x_0(i*h_x);
+            //U_new[i][N_y] = sol_x_1(i*h_x);
+            U_new[i][0] = 1;
+            U_new[i][N_y] = 1;
         }
 
         for(int i = 1; i < N_x; ++i)
@@ -166,17 +178,22 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
             {
                 U_new[i][j] = tau/h_x/h_x*(U_prev[i-1][j] + U_prev[i+1][j])
                               + tau/h_y/h_y*(U_prev[i][j-1] + U_prev[i][j+1])
-                              - tau*right(i*h_x, j*h_y) + (1 - 2*tau/h_x/h_x -2*tau/h_y/h_y)*U_prev[i][j];
+                              //- tau*right(i*h_x, j*h_y)
+                              + (1 - 2*tau/h_x/h_x -2*tau/h_y/h_y)*U_prev[i][j];
             }
         }
 
-        for(int i = 0; i <= N_x; ++i)
+        for(int i = 1; i < N_x; ++i)
         {
-            for(int j = 0; j <= N_y; j++)
+            for(int j = 1; j < N_y; j++)
             {
-               max = fabs((U_new[i][j] - U_prev[i][j])/tau);
+                if(max < fabs((U_new[i][j] - U_prev[i][j])/tau))
+                {
+                    max = fabs((U_new[i][j] - U_prev[i][j])/tau);
+                }
             }
         }
+        std::cout << "max : " << max << std::endl;
 
         if(max < eps) break;
 
@@ -211,6 +228,7 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
     }
     ploter_win.drawAnimPlot(plot_anim);
     ploter_win.drawAnimPlot(sol_plot_anim);
+    fout << "\n\n\n " << time << std::endl;
 }
 
 void expl_appr(AnimPloter & ploter_win, std::ostream & fout_appr)
