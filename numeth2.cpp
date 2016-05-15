@@ -122,8 +122,8 @@ double right(double x, double y)
 void expl(AnimPloter & ploter_win, std::ostream & fout)
 {
     int M = 10;
-    int N_x = 8;
-    int N_y = 8;
+    int N_x = 2;
+    int N_y = 2;
     double tau = 1./M;
     double h_x = 1./N_x;
     //fout << " " << h_x << std::endl;
@@ -324,8 +324,151 @@ void expl_appr(AnimPloter & ploter_win, std::ostream & fout_appr)
 
 }
 
-void triangle()
+void triangle(AnimPloter & ploter_win, std::ostream & fout)
 {
+    int M = 10;
+    int N_x = 2;
+    int N_y = 2;
+    double tau = 1./M;
+    double h_x = 1./N_x;
+    double h_y = 1./N_y;
 
+    double eps = 0.001;
+    double max = 0;
+    double error = 0;
+    int time = 0;
+
+    std::vector<std::vector<double>> U_prev(N_x + 1, std::vector<double>(N_y + 1, 0));
+    std::vector<std::vector<double>> U_new(N_x + 1, std::vector<double>(N_y + 1, 0));
+    std::vector<std::vector<double>> Half_Xi(N_x + 1, std::vector<double>(N_y + 1, 0));
+    std::vector<std::vector<double>> Xi(N_x + 1, std::vector<double>(N_y + 1, 0));
+
+    for(int j = 0; j <= N_y; ++j)
+    {
+        //U_prev[0][j] = sol_0_y(j*h_y);
+        //U_prev[N_x][j] = sol_1_y(j*h_y);
+        U_prev[0][j] = 1;
+        U_prev[N_x][j] = 1;
+    }
+    for(int i = 0; i <= N_x; ++i)
+    {
+        //U_prev[i][0] = sol_x_0(i*h_x);
+        //U_prev[i][N_y] = sol_x_1(i*h_x);
+        U_prev[i][0] = 1;
+        U_prev[i][N_y] = 1;
+    }
+
+    while(true)
+    {
+        max = 0;
+        ++time;
+        for(int i = 0; i <= N_x; ++i)
+        {
+            for(int j = 0; j <= N_y; ++j)
+            {
+                Xi[i][j] = 0;
+                Half_Xi[i][j] = 0;
+            }
+        }
+
+        for(int j = 0; j <= N_y; ++j)
+        {
+            //U_new[0][j] = sol_0_y(j*h_y);
+            //U_new[N_x][j] = sol_1_y(j*h_y);
+            U_new[0][j] = 1;
+            U_new[N_x][j] = 1;
+        }
+        for(int i = 0; i <= N_x; ++i)
+        {
+            //U_new[i][0] = sol_x_0(i*h_x);
+            //U_new[i][N_y] = sol_x_1(i*h_x);
+            U_new[i][0] = 1;
+            U_new[i][N_y] = 1;
+        }
+
+        for (int i = 1; i < N_x; ++i)
+        {
+            for (int j = 1; j < N_y; ++j)
+            {
+                Half_Xi[i][j] = (tau/h_x/h_x*U_prev[i-1][j] + tau/h_x/h_x*U_prev[i+1][j]
+                                + tau/h_y/h_y*U_prev[i][j-1] + tau/h_y/h_y*U_prev[i][j+1]
+                                - 2*tau*(1/h_x/h_x + 1/h_y/h_y)*U_prev[i][j]
+                                + tau/h_x/h_x * Half_Xi[i-1][j] + tau/h_y/h_y*Half_Xi[i][j-1])
+                                / (1 + tau/h_x/h_x + tau/h_y/h_y);
+            }
+        }
+
+        for(int i = 0; i < N_x - 1; ++i)
+        {
+            for(int j = 1; j < N_y; ++j)
+            {
+                Xi[i+1][j] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
+                             - tau/h_y/h_y*Xi[i][j+1] - Half_Xi[i][j])/(tau/h_x/h_x);
+                //Xi[i][j+1] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
+                //             - tau/h_x/h_x*Xi[i+1][j] - Half_Xi[i][j])/(tau/h_y/h_y);
+            }
+        }
+
+        /*
+        for (int i = 1; i < N_x; ++i)
+        {
+            for (int j = 1; j < N_y; ++j)
+            {
+                Half_Xi[i+1][j] = (Half_Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y) - tau/h_y/h_y*Half_Xi[i][j+1]
+                                  - (tau/h_x/h_x*U_prev[i-1][j] + tau/h_x/h_x*U_prev[i+1][j]
+                                  + tau/h_y/h_y*U_prev[i][j-1] + tau/h_y/h_y*U_prev[i][j+1]
+                                  - 2*tau*(1/h_x/h_x + 1/h_y/h_y)*U_prev[i][j]))/(tau/h_y/h_y);
+            }
+        }
+
+        for(int i = 1; i < N_x - 1; ++i)
+        {
+            for(int j = 1; j < N_y; ++j)
+            {
+                Xi[i][j] = Half_Xi[i][j] - tau/h_x/h_x*Xi[i-1][j] - tau/h_y/h_y*Xi[i][j-1];
+            }
+        }
+*/
+        for(int i = 1; i < N_x; ++i)
+        {
+            for(int j = 1; j < N_y; ++j)
+            {
+                U_new[i][j] = U_prev[i][j] + Xi[i][j];
+            }
+        }
+
+        for(int i = 1; i < N_x; ++i)
+        {
+            for(int j = 1; j < N_y; j++)
+            {
+                if(max < fabs((U_new[i][j] - U_prev[i][j])/tau))
+                {
+                    max = fabs((U_new[i][j] - U_prev[i][j])/tau);
+                }
+            }
+        }
+        std::cout << "max : " << max << std::endl;
+
+        if(max < eps) break;
+
+        U_prev = U_new;
+    }
+
+    std::vector< Plot * > plot_anim;
+    std::vector< Plot * > sol_plot_anim;
+    for (int i = 0; i <= N_x; ++i)
+    {
+       /* for(auto el : U_new[i])
+        {
+            std::cout << el << '\t';
+        }
+        std::cout << std::endl;*/
+
+        plot_anim.push_back(new PieceLinPlot(0, 1, -2, 2, QColor(255, 64, 64), U_new[i]));
+        sol_plot_anim.push_back(new U_plot(0, 1, -2, 2, QColor(64, 64, 255), i*h_x));
+    }
+    ploter_win.drawAnimPlot(plot_anim);
+    ploter_win.drawAnimPlot(sol_plot_anim);
+    fout << "\n\n\n " << time << std::endl;
 
 }
