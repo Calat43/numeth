@@ -121,9 +121,9 @@ double right(double x, double y)
 
 void expl(AnimPloter & ploter_win, std::ostream & fout)
 {
-    int M = 10;
-    int N_x = 2;
-    int N_y = 2;
+    int M = 20560;
+    int N_x = 64;
+    int N_y = 64;
     double tau = 1./M;
     double h_x = 1./N_x;
     //fout << " " << h_x << std::endl;
@@ -139,17 +139,17 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
 
     for(int j = 0; j <= N_y; ++j)
     {
-        //U_prev[0][j] = sol_0_y(j*h_y);
-        //U_prev[N_x][j] = sol_1_y(j*h_y);
-        U_prev[0][j] = 1;
-        U_prev[N_x][j] = 1;
+        U_prev[0][j] = sol_0_y(j*h_y);
+        U_prev[N_x][j] = sol_1_y(j*h_y);
+        //U_prev[0][j] = 1;
+        //U_prev[N_x][j] = 1;
     }
     for(int i = 0; i <= N_x; ++i)
     {
-        //U_prev[i][0] = sol_x_0(i*h_x);
-        //U_prev[i][N_y] = sol_x_1(i*h_x);
-        U_prev[i][0] = 1;
-        U_prev[i][N_y] = 1;
+        U_prev[i][0] = sol_x_0(i*h_x);
+        U_prev[i][N_y] = sol_x_1(i*h_x);
+        //U_prev[i][0] = 1;
+        //U_prev[i][N_y] = 1;
     }
 
     while(true)
@@ -159,17 +159,17 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
 
         for(int j = 0; j <= N_y; ++j)
         {
-            //U_new[0][j] = sol_0_y(j*h_y);
-            //U_new[N_x][j] = sol_1_y(j*h_y);
-            U_new[0][j] = 1;
-            U_new[N_x][j] = 1;
+            U_new[0][j] = sol_0_y(j*h_y);
+            U_new[N_x][j] = sol_1_y(j*h_y);
+            //U_new[0][j] = 1;
+            //U_new[N_x][j] = 1;
         }
         for(int i = 0; i <= N_x; ++i)
         {
-            //U_new[i][0] = sol_x_0(i*h_x);
-            //U_new[i][N_y] = sol_x_1(i*h_x);
-            U_new[i][0] = 1;
-            U_new[i][N_y] = 1;
+            U_new[i][0] = sol_x_0(i*h_x);
+            U_new[i][N_y] = sol_x_1(i*h_x);
+            //U_new[i][0] = 1;
+            //U_new[i][N_y] = 1;
         }
 
         for(int i = 1; i < N_x; ++i)
@@ -178,7 +178,7 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
             {
                 U_new[i][j] = tau/h_x/h_x*(U_prev[i-1][j] + U_prev[i+1][j])
                               + tau/h_y/h_y*(U_prev[i][j-1] + U_prev[i][j+1])
-                              //- tau*right(i*h_x, j*h_y)
+                              - tau*right(i*h_x, j*h_y)
                               + (1 - 2*tau/h_x/h_x -2*tau/h_y/h_y)*U_prev[i][j];
             }
         }
@@ -205,13 +205,14 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
     {
         for (int j = 0; j <= N_y; ++j)
         {
-            if(fabs(U_new[i][j] - solution2(i*N_x, j*N_y)) > error)
+            if(fabs(U_new[i][j] - solution2(i*h_x, j*h_y)) > error)
             {
-                error = fabs(U_new[i][j] - solution2(i*N_x, j*N_y));
-                fout << " " << error << std::endl;
+                error = fabs(U_new[i][j] - solution2(i*h_x, j*h_y));
+
             }
         }
     }
+    fout << " " << error << std::endl;
 
     std::vector< Plot * > plot_anim;
     std::vector< Plot * > sol_plot_anim;
@@ -230,7 +231,7 @@ void expl(AnimPloter & ploter_win, std::ostream & fout)
     ploter_win.drawAnimPlot(sol_plot_anim);
     fout << "\n\n\n " << time << std::endl;
 }
-
+/*
 void expl_appr(AnimPloter & ploter_win, std::ostream & fout_appr)
 {
     int M = 100;
@@ -315,6 +316,7 @@ void expl_appr(AnimPloter & ploter_win, std::ostream & fout_appr)
                 if(new_err > error)
                 {
                     error = new_err;
+                }
 
                 }
             }
@@ -322,13 +324,13 @@ void expl_appr(AnimPloter & ploter_win, std::ostream & fout_appr)
         fout_appr << " " << error << std::endl;
     }
 
-}
+*/
 
 void triangle(AnimPloter & ploter_win, std::ostream & fout)
 {
-    int M = 10;
-    int N_x = 2;
-    int N_y = 2;
+    int M = 10240;
+    int N_x = 32;
+    int N_y = 32;
     double tau = 1./M;
     double h_x = 1./N_x;
     double h_y = 1./N_y;
@@ -345,17 +347,17 @@ void triangle(AnimPloter & ploter_win, std::ostream & fout)
 
     for(int j = 0; j <= N_y; ++j)
     {
-        //U_prev[0][j] = sol_0_y(j*h_y);
-        //U_prev[N_x][j] = sol_1_y(j*h_y);
-        U_prev[0][j] = 1;
-        U_prev[N_x][j] = 1;
+        U_prev[0][j] = sol_0_y(j*h_y);
+        U_prev[N_x][j] = sol_1_y(j*h_y);
+        //U_prev[0][j] = 1;
+        //U_prev[N_x][j] = 1;
     }
     for(int i = 0; i <= N_x; ++i)
     {
-        //U_prev[i][0] = sol_x_0(i*h_x);
-        //U_prev[i][N_y] = sol_x_1(i*h_x);
-        U_prev[i][0] = 1;
-        U_prev[i][N_y] = 1;
+        U_prev[i][0] = sol_x_0(i*h_x);
+        U_prev[i][N_y] = sol_x_1(i*h_x);
+        //U_prev[i][0] = 1;
+        //U_prev[i][N_y] = 1;
     }
 
     while(true)
@@ -373,17 +375,17 @@ void triangle(AnimPloter & ploter_win, std::ostream & fout)
 
         for(int j = 0; j <= N_y; ++j)
         {
-            //U_new[0][j] = sol_0_y(j*h_y);
-            //U_new[N_x][j] = sol_1_y(j*h_y);
-            U_new[0][j] = 1;
-            U_new[N_x][j] = 1;
+            U_new[0][j] = sol_0_y(j*h_y);
+            U_new[N_x][j] = sol_1_y(j*h_y);
+            //U_new[0][j] = 1;
+            //U_new[N_x][j] = 1;
         }
         for(int i = 0; i <= N_x; ++i)
         {
-            //U_new[i][0] = sol_x_0(i*h_x);
-            //U_new[i][N_y] = sol_x_1(i*h_x);
-            U_new[i][0] = 1;
-            U_new[i][N_y] = 1;
+            U_new[i][0] = sol_x_0(i*h_x);
+            U_new[i][N_y] = sol_x_1(i*h_x);
+            //U_new[i][0] = 1;
+            //U_new[i][N_y] = 1;
         }
 
         for (int i = 1; i < N_x; ++i)
@@ -398,14 +400,16 @@ void triangle(AnimPloter & ploter_win, std::ostream & fout)
             }
         }
 
-        for(int i = 0; i < N_x - 1; ++i)
+        for(int i = N_x - 1; i > 0; --i)
         {
-            for(int j = 1; j < N_y; ++j)
+            for(int j = N_y; j > 0; --j)
             {
-                Xi[i+1][j] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
-                             - tau/h_y/h_y*Xi[i][j+1] - Half_Xi[i][j])/(tau/h_x/h_x);
+                //Xi[i+1][j] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
+                //             - tau/h_y/h_y*Xi[i][j+1] - Half_Xi[i][j])/(tau/h_x/h_x);
                 //Xi[i][j+1] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
                 //             - tau/h_x/h_x*Xi[i+1][j] - Half_Xi[i][j])/(tau/h_y/h_y);
+                Xi[i][j] = (Half_Xi[i][j] + tau/h_x/h_x*Xi[i+1][j] + tau/h_y/h_y*Xi[i][j+1])/
+                           (1 + tau/h_x/h_x + tau/h_y/h_y);
             }
         }
 

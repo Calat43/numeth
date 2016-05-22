@@ -1,7 +1,7 @@
 #include "ploter.h"
 #include <QApplication>
 #include <QtMath>
-#include "numeth2.h"
+#include "numeth3.h"
 #include <fstream>
 /*
 class Sin_plot : public Plot
@@ -76,7 +76,9 @@ int main(int argc, char *argv[])
     ploter_win.show();
     //task1(ploter_win, fout);
     //expl(ploter_win, fout);
-    triangle(ploter_win, fout_appr);
+    //triangle(ploter_win, fout_appr);
+    maccormack(ploter_win, fout);
+
 
     /*
     Ploter ploter_win(-2, 2, -3, 3, QColor(0,0,0));

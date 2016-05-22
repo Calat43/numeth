@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     plot.cpp \
     utils.cpp \
     numeth1.cpp \
-    numeth2.cpp
+    numeth2.cpp \
+    numeth3.cpp
 
 HEADERS  += \
     axis.h \
@@ -26,6 +27,7 @@ HEADERS  += \
     plot.h \
     utils.h \
     numeth1.h \
-    numeth2.h
+    numeth2.h \
+    numeth3.h
 
 CONFIG += c++11
