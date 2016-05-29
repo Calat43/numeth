@@ -384,7 +384,7 @@ double f_2(  double w_1,
              double w_2,
              double w_3, double y )
 {
-    return w_2 * w_2 * p_from_e( w_3, w_1, w_2 / w_1, y );
+    return w_2 * w_2 / w_1 + p_from_e( w_3, w_1, w_2 / w_1, y );
 }
 double f_3(  double w_1,
              double w_2,
@@ -417,6 +417,28 @@ double f_astr_3( std::vector< double > w_1,
 {
     double f = f_3( w_1[j], w_2[j], w_3[j], y );
     return f - D * h * ( w_3[j] - w_3[j - 1] );
+}
+
+double f_tild_astr_1( double w_1, double w_2, double w_3,
+                      double w_1p1, double w_2p1, double w_3p1,
+                      double D, double h, double y )
+{
+    double f = f_1( w_1, w_2, w_3 );
+    return f - D * h * ( w_1p1 - w_1 );
+}
+double f_tild_astr_2( double w_1, double w_2, double w_3,
+                      double w_1p1, double w_2p1, double w_3p1,
+                      double D, double h, double y )
+{
+    double f = f_2( w_1, w_2, w_3, y );
+    return f - D * h * ( w_2p1 - w_2 );
+}
+double f_tild_astr_3( double w_1, double w_2, double w_3,
+                      double w_1p1, double w_2p1, double w_3p1,
+                      double D, double h, double y )
+{
+    double f = f_3( w_1, w_2, w_3, y );
+    return f - D * h * ( w_3p1 - w_3 );
 }
 
 double w_tild_1( std::vector< double > w_1,
@@ -452,14 +474,17 @@ double w_next_1( std::vector< double > w_1,
                  std::vector< double > w_3, int j,
                  double D, double h, double y, double tau )
 {
-    double w_t_1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_2 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_3 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
-    double f = f_1( w_t_1, w_t_2, w_t_3 );
-    double fjm1 = f_1( w_t_1jm1, w_t_2jm1, w_t_3jm1 );
+    double w_t_1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_2 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_3 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_1jp1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_2jp1 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_3jp1 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double f = f_tild_astr_1( w_t_1, w_t_2, w_t_3, w_t_1jp1, w_t_2jp1, w_t_3jp1, D, h, y );
+    double fjm1 = f_tild_astr_1( w_t_1jm1, w_t_2jm1, w_t_3jm1, w_t_1, w_t_2, w_t_3, D, h, y );
     return (w_1[j] + w_t_1) / 2 - tau/2/h*( f - fjm1 );
 }
 double w_next_2( std::vector< double > w_1,
@@ -467,14 +492,17 @@ double w_next_2( std::vector< double > w_1,
                  std::vector< double > w_3, int j,
                  double D, double h, double y, double tau )
 {
-    double w_t_1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_2 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_3 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
-    double f    = f_2( w_t_1, w_t_2, w_t_3, y );
-    double fjm1 = f_2( w_t_1jm1, w_t_2jm1, w_t_3jm1, y );
+    double w_t_1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_2 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_3 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_1jp1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_2jp1 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_3jp1 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double f = f_tild_astr_2( w_t_1, w_t_2, w_t_3, w_t_1jp1, w_t_2jp1, w_t_3jp1, D, h, y );
+    double fjm1 = f_tild_astr_2( w_t_1jm1, w_t_2jm1, w_t_3jm1, w_t_1, w_t_2, w_t_3, D, h, y );
     return (w_2[j] + w_t_2) / 2 - tau/2/h*( f - fjm1 );
 }
 double w_next_3( std::vector< double > w_1,
@@ -482,14 +510,17 @@ double w_next_3( std::vector< double > w_1,
                  std::vector< double > w_3, int j,
                  double D, double h, double y, double tau )
 {
-    double w_t_1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_2 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_3 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
-    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
-    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
-    double f = f_3( w_t_1, w_t_2, w_t_3, y );
-    double fjm1 = f_3( w_t_1jm1, w_t_2jm1, w_t_3jm1, y );
+    double w_t_1 = w_tild_1( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_2 = w_tild_2( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_3 = w_tild_3( w_1, w_2, w_3, j, D, h, y, tau );
+    double w_t_1jm1 = w_tild_1( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_2jm1 = w_tild_2( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_3jm1 = w_tild_3( w_1, w_2, w_3, j-1, D, h, y, tau );
+    double w_t_1jp1 = w_tild_1( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_2jp1 = w_tild_2( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double w_t_3jp1 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
+    double f = f_tild_astr_3( w_t_1, w_t_2, w_t_3, w_t_1jp1, w_t_2jp1, w_t_3jp1, D, h, y );
+    double fjm1 = f_tild_astr_3( w_t_1jm1, w_t_2jm1, w_t_3jm1, w_t_1, w_t_2, w_t_3, D, h, y );
     return (w_3[j] + w_t_3) / 2 - tau/2/h*( f - fjm1 );
 }
 
@@ -499,8 +530,8 @@ void maccormack( AnimPloter & ro_ploter_win,
                  std::ostream & fout )
 {
     double y = 1.4;
-    int M = 200;
-    int N = 500;
+    int M = 500;
+    int N = 200;
     double T = 2.5;
     double D = 4;
     //начальные данные, p_l > p_r
