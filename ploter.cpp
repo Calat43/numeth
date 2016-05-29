@@ -2,7 +2,8 @@
 
 Ploter::Ploter(double x_min, double x_max,
 			   double y_min, double y_max,
-			   QColor axis_color)
+               QColor axis_color,
+               const char * title)
 	: QWidget(nullptr)
 	, m_x_min(x_min)
 	, m_x_max(x_max)
@@ -10,7 +11,7 @@ Ploter::Ploter(double x_min, double x_max,
 	, m_y_max(y_max)
 	, m_axis(*this, axis_color, this)
 {
-	setWindowTitle(tr("Ploter"));
+    setWindowTitle(tr(title));
 	resize(QSize(640, 480));
 }
 

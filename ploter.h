@@ -23,7 +23,8 @@ class Ploter : public QWidget
 public:
     Ploter(double x_min, double x_max,
            double y_min, double y_max,
-           QColor axis_color);
+           QColor axis_color,
+           const char * title);
 
     void paintEvent(QPaintEvent *);
 
@@ -62,8 +63,9 @@ public:
     AnimPloter(double x_min, double x_max,
                double y_min, double y_max,
                QColor axis_color,
-               unsigned int delay)
-        : Ploter(x_min, x_max, y_min, y_max, axis_color)
+               unsigned int delay,
+               const char * title)
+        : Ploter(x_min, x_max, y_min, y_max, axis_color, title)
         , m_cur_plot(0)
     {
         QTimer *timer = new QTimer(this);

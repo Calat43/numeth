@@ -72,12 +72,16 @@ int main(int argc, char *argv[])
     std::ofstream fout("output.txt", std::ofstream::out);
     std::ofstream fout_appr("output_appr.txt", std::ofstream::out);
 
-    AnimPloter ploter_win(-0.1, 1.1, -4, 4, QColor(0, 0, 0), 2000);
-    ploter_win.show();
+    AnimPloter ro_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "dencity");
+    AnimPloter u_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "velocity");
+    AnimPloter p_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "pressure");
+    ro_ploter_win.show();
+    u_ploter_win.show();
+    p_ploter_win.show();
     //task1(ploter_win, fout);
     //expl(ploter_win, fout);
     //triangle(ploter_win, fout_appr);
-    maccormack(ploter_win, fout);
+    maccormack(ro_ploter_win, u_ploter_win, p_ploter_win, fout);
 
 
     /*
