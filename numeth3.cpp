@@ -503,6 +503,7 @@ double w_next_2( std::vector< double > w_1,
     double w_t_3jp1 = w_tild_3( w_1, w_2, w_3, j+1, D, h, y, tau );
     double f = f_tild_astr_2( w_t_1, w_t_2, w_t_3, w_t_1jp1, w_t_2jp1, w_t_3jp1, D, h, y );
     double fjm1 = f_tild_astr_2( w_t_1jm1, w_t_2jm1, w_t_3jm1, w_t_1, w_t_2, w_t_3, D, h, y );
+    //return 0;
     return (w_2[j] + w_t_2) / 2 - tau/2/h*( f - fjm1 );
 }
 double w_next_3( std::vector< double > w_1,
@@ -530,8 +531,8 @@ void maccormack( AnimPloter & ro_ploter_win,
                  std::ostream & fout )
 {
     double y = 1.4;
-    int M = 500;
-    int N = 200;
+    int M = 200;
+    int N = 500;
     double T = 2.5;
     double D = 4;
     //начальные данные, p_l > p_r
