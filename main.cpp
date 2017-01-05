@@ -1,6 +1,7 @@
 #include "ploter.h"
 #include <QApplication>
 #include <QtMath>
+#include "numeth2.h"
 #include "numeth3.h"
 #include <fstream>
 /*
@@ -71,16 +72,18 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
     std::ofstream fout("output.txt", std::ofstream::out);
     std::ofstream fout_appr("output_appr.txt", std::ofstream::out);
+   // AnimPloter trian_ploter_win(-0.1, 2, -2, 2, QColor(0, 0, 0), 100, "triangle");
+    //trian_ploter_win.show();
 
-    AnimPloter ro_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "dencity");
-    AnimPloter u_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "velocity");
-    AnimPloter p_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 200, "pressure");
+    AnimPloter ro_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 100, "dencity");
+    AnimPloter u_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 100, "velocity");
+    AnimPloter p_ploter_win(-4.1, 6.1, 0, 1, QColor(0, 0, 0), 100, "pressure");
     ro_ploter_win.show();
     u_ploter_win.show();
     p_ploter_win.show();
     //task1(ploter_win, fout);
     //expl(ploter_win, fout);
-    //triangle(ploter_win, fout_appr);
+    //triangle(trian_ploter_win, fout_appr);
     maccormack(ro_ploter_win, u_ploter_win, p_ploter_win, fout);
 
 

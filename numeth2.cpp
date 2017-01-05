@@ -121,7 +121,7 @@ double right(double x, double y)
 
 void expl(AnimPloter & ploter_win, std::ostream & fout)
 {
-    int M = 20560;
+    int M = 2056;
     int N_x = 64;
     int N_y = 64;
     double tau = 1./M;
@@ -395,14 +395,15 @@ void triangle(AnimPloter & ploter_win, std::ostream & fout)
                 Half_Xi[i][j] = (tau/h_x/h_x*U_prev[i-1][j] + tau/h_x/h_x*U_prev[i+1][j]
                                 + tau/h_y/h_y*U_prev[i][j-1] + tau/h_y/h_y*U_prev[i][j+1]
                                 - 2*tau*(1/h_x/h_x + 1/h_y/h_y)*U_prev[i][j]
-                                + tau/h_x/h_x * Half_Xi[i-1][j] + tau/h_y/h_y*Half_Xi[i][j-1])
+                                + tau/h_x/h_x * Half_Xi[i-1][j] + tau/h_y/h_y*Half_Xi[i][j-1]
+                                - tau*right(i*h_x, j*h_y))
                                 / (1 + tau/h_x/h_x + tau/h_y/h_y);
             }
         }
 
         for(int i = N_x - 1; i > 0; --i)
         {
-            for(int j = N_y; j > 0; --j)
+            for(int j = N_y-1; j > 0; --j)
             {
                 //Xi[i+1][j] = (Xi[i][j]*(1 + tau/h_x/h_x + tau/h_y/h_y)
                 //             - tau/h_y/h_y*Xi[i][j+1] - Half_Xi[i][j])/(tau/h_x/h_x);

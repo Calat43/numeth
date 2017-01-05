@@ -532,9 +532,9 @@ void maccormack( AnimPloter & ro_ploter_win,
 {
     double y = 1.4;
     int M = 200;
-    int N = 500;
+    int N = 200;
     double T = 2.5;
-    double D = 4;
+    double D = 1;
     //начальные данные, p_l > p_r
     double ro_l = 1;
     double p_l = 1;
@@ -600,13 +600,28 @@ void maccormack( AnimPloter & ro_ploter_win,
     std::vector< Plot * > sol_u_plot;
     std::vector< Plot * > p_plot;
     std::vector< Plot * > sol_p_plot;
+
+    double err_den = 0;
+    double err_vel = 0;
+    double err_press = 0;
     for (int t = 0; t <= N; ++t)
     {
         for( int j = 0; j <= M; ++j)
         {
-            fout << u[t][j] << " ";
+            if(err_den < fabs(exact_dencity(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_r, eps) - ro[t][j]))
+            {
+                err_den = fabs(exact_dencity(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_r, eps) - ro[t][j]);
+            }
+            if(err_vel < fabs(exact_velocity(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_l, u_r, eps) - u[t][j]))
+            {
+                err_vel = fabs(exact_velocity(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_l, u_r, eps) - u[t][j]);
+            }
+            if(err_press < fabs(exact_pressure(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_r, eps) - p[t][j]))
+            {
+                err_press = fabs(exact_pressure(xl +j*h, t*tau, ro_l, ro_r, p_l, p_r, y, u_r, eps) - p[t][j]);
+            }
         }
-        fout << std::endl;
+
         ro_plot.push_back(new PieceLinPlot(-4, 6, 0, 1, QColor(255, 64, 64), ro[t]));
         u_plot.push_back(new PieceLinPlot(-4, 6, -1, 10,  QColor(255, 64, 64), u[t]));
         p_plot.push_back(new PieceLinPlot(-4, 6, 0, 1, QColor(255, 64, 64), p[t]));
@@ -615,6 +630,9 @@ void maccormack( AnimPloter & ro_ploter_win,
         sol_u_plot.push_back(new Velocity_Plot(-4, 6, 0, 1, QColor(64, 64, 255), t*tau, ro_l, ro_r, p_l, p_r, y, u_l, u_r, eps));
         sol_p_plot.push_back(new Pressure_Plot(-4, 6, 0, 1, QColor(64, 64, 255), t*tau, ro_l, ro_r, p_l, p_r, y, u_r, eps));
     }
+    fout << "\n " << err_den << std::endl;
+    fout << "\n " << err_vel << std::endl;
+    fout << "\n " << err_press << std::endl;
     ro_ploter_win.drawAnimPlot(ro_plot);
     u_ploter_win.drawAnimPlot(u_plot);
     p_ploter_win.drawAnimPlot(p_plot);
